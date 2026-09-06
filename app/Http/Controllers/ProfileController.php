@@ -49,11 +49,12 @@ class ProfileController extends Controller
 
     if ($request->hasFile('photo')) {
         $file = $request->file('photo');
+        [$bytes, $mime] = $this->compressPhoto($file->getRealPath());
 
         // base64: PDO's pgsql driver sends string params as UTF-8 text, and raw
         // image bytes aren't valid UTF-8, so binary bytes must be encoded first.
-        $data['photo_data'] = base64_encode(file_get_contents($file->getRealPath()));
-        $data['photo_mime'] = $file->getMimeType();
+        $data['photo_data'] = base64_encode($bytes);
+        $data['photo_mime'] = $mime;
     }
 
     // Pakai fill()->save() karena timestamps = false
@@ -61,6 +62,38 @@ class ProfileController extends Controller
 
     return redirect()->route('profile.edit')->with('success', 'Profil berhasil diperbarui.');
 }
+
+    /**
+     * Resize ke maksimum 512px lalu re-encode sebagai JPEG kualitas 75,
+     * supaya ukuran yang disimpan (base64, di kolom text) jauh lebih kecil.
+     */
+    private function compressPhoto(string $path): array
+    {
+        $source = @imagecreatefromstring(file_get_contents($path));
+
+        if (!$source) {
+            return [file_get_contents($path), mime_content_type($path)];
+        }
+
+        $width = imagesx($source);
+        $height = imagesy($source);
+        $ratio = min(1, 512 / max($width, $height));
+        $newWidth = (int) round($width * $ratio);
+        $newHeight = (int) round($height * $ratio);
+
+        $resized = imagecreatetruecolor($newWidth, $newHeight);
+        imagefill($resized, 0, 0, imagecolorallocate($resized, 255, 255, 255));
+        imagecopyresampled($resized, $source, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+        ob_start();
+        imagejpeg($resized, null, 75);
+        $bytes = ob_get_clean();
+
+        imagedestroy($source);
+        imagedestroy($resized);
+
+        return [$bytes, 'image/jpeg'];
+    }
 
     /**
      * Stream foto profil dari database.
