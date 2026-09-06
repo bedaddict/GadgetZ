@@ -40,7 +40,7 @@ target="#navbarSupportedContent">
                 <li class="nav-item dropdown"> 
                     <a class="py-0 nav-link d-flex align-items-center" href="#" id="navbarDropdown" 
 role="button" data-bs-toggle="dropdown"> 
-                        <img src="{{ auth()->user()->photo ? asset('storage/profile_photos/' . auth()->user()->photo) : asset('hope-ui/assets/images/avatars/01.png') }}" 
+                        <img src="{{ auth()->user()->photo_url ?? asset('hope-ui/assets/images/avatars/01.png') }}"
     alt="User-Profile" 
     class="theme-color-default-img img-fluid avatar avatar-50 avatar-rounded"
     style="object-fit: cover;">

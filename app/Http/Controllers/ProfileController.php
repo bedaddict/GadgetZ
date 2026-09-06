@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -48,16 +48,10 @@ class ProfileController extends Controller
     ];
 
     if ($request->hasFile('photo')) {
-        // Hapus foto lama kalau ada
-        if ($user->photo && Storage::disk('public')->exists('profile_photos/' . $user->photo)) {
-            Storage::disk('public')->delete('profile_photos/' . $user->photo);
-        }
+        $file = $request->file('photo');
 
-        $file     = $request->file('photo');
-        $filename = time() . '_' . $file->getClientOriginalName();
-        $file->storeAs('profile_photos', $filename, 'public'); // disk 'public' eksplisit
-
-        $data['photo'] = $filename;
+        $data['photo_data'] = file_get_contents($file->getRealPath());
+        $data['photo_mime'] = $file->getMimeType();
     }
 
     // Pakai fill()->save() karena timestamps = false
@@ -65,6 +59,19 @@ class ProfileController extends Controller
 
     return redirect()->route('profile.edit')->with('success', 'Profil berhasil diperbarui.');
 }
+
+    /**
+     * Stream foto profil dari database.
+     */
+    public function photo(User $user)
+    {
+        abort_unless($user->photo_data, 404);
+
+        return response($user->photo_data, 200, [
+            'Content-Type'  => $user->photo_mime ?? 'application/octet-stream',
+            'Cache-Control' => 'private, max-age=3600',
+        ]);
+    }
 
     /**
      * Tampilkan halaman ubah password

@@ -49,7 +49,7 @@
             <div class="card" data-aos="fade-up" data-aos-delay="400">
                 <div class="card-body text-center">
 
-                    <img src="{{ $user->photo ? asset('storage/profile_photos/' . $user->photo) : asset('hope-ui/assets/images/avatars/01.png') }}"
+                    <img src="{{ $user->photo_url ?? asset('hope-ui/assets/images/avatars/01.png') }}"
                         alt="{{ $user->name }}"
                         class="rounded-pill img-fluid mb-3" 
                         style="object-fit: cover; width: 130px; height: 130px; border: 3px solid #46136b;">

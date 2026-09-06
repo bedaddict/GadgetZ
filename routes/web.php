@@ -99,6 +99,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/profil', [ProfileController::class, 'update'])
         ->name('profile.update');
 
+    Route::get('/profil/foto/{user}', [ProfileController::class, 'photo'])
+        ->name('profile.photo');
+
     Route::get('/ubah-password', [ProfileController::class, 'password'])
         ->name('profile.password');
 
