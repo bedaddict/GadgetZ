@@ -50,7 +50,9 @@ class ProfileController extends Controller
     if ($request->hasFile('photo')) {
         $file = $request->file('photo');
 
-        $data['photo_data'] = file_get_contents($file->getRealPath());
+        // base64: PDO's pgsql driver sends string params as UTF-8 text, and raw
+        // image bytes aren't valid UTF-8, so binary bytes must be encoded first.
+        $data['photo_data'] = base64_encode(file_get_contents($file->getRealPath()));
         $data['photo_mime'] = $file->getMimeType();
     }
 
@@ -67,7 +69,7 @@ class ProfileController extends Controller
     {
         abort_unless($user->photo_data, 404);
 
-        return response($user->photo_data, 200, [
+        return response(base64_decode($user->photo_data), 200, [
             'Content-Type'  => $user->photo_mime ?? 'application/octet-stream',
             'Cache-Control' => 'private, max-age=3600',
         ]);
