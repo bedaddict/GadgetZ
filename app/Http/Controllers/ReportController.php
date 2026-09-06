@@ -35,11 +35,11 @@ class ReportController extends Controller
         $totalTransactions = $transactions->count();
 
         $totalIn = $transactions
-            ->filter(fn ($item) => strtolower($item->type) === 'masuk')
+            ->filter(fn ($item) => strtolower($item->type) === 'Masuk')
             ->sum('quantity');
 
         $totalOut = $transactions
-            ->filter(fn ($item) => strtolower($item->type) === 'keluar')
+            ->filter(fn ($item) => strtolower($item->type) === 'Keluar')
             ->sum('quantity');
 
         return view('reports.index', compact(
