@@ -76,7 +76,7 @@
                             <h6 class="mb-0">{{ $t->product->name }}</h6>
                             <small class="text-muted">{{ $t->created_at->diffForHumans() }}</small>
                         </div>
-                        <span class="badge {{ $t->type == 'masuk' ? 'bg-success' : 'bg-danger' }}">
+                        <span class="badge {{ $t->type == 'Masuk' ? 'bg-success' : 'bg-danger' }}">
                             {{ $t->quantity }} {{ $t->product->unit }}
                         </span>
                     </div>

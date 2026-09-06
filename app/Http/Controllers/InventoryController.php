@@ -46,7 +46,7 @@ class InventoryController extends Controller
     {
         $request->validate([
             'product_id' => ['required', 'exists:products,id'],
-            'type' => ['required', 'in:masuk,keluar'],
+            'type' => ['required', 'in:Masuk,Keluar'],
             'quantity' => ['required', 'integer', 'min:1'],
             'transaction_date' => ['required', 'date'],
             'notes' => ['nullable', 'string'],
@@ -69,13 +69,13 @@ class InventoryController extends Controller
             $quantity = (int) $request->quantity;
             $currentStock = (int) $product->stock;
 
-            if ($request->type === 'keluar' && $quantity > $currentStock) {
+            if ($request->type === 'Keluar' && $quantity > $currentStock) {
                 throw ValidationException::withMessages([
                     'quantity' => 'Jumlah barang keluar tidak boleh melebihi stok tersedia.',
                 ]);
             }
 
-            if ($request->type === 'masuk') {
+            if ($request->type === 'Masuk') {
                 $stockAfter = $currentStock + $quantity;
             } else {
                 $stockAfter = $currentStock - $quantity;
