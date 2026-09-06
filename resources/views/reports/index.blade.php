@@ -267,13 +267,13 @@
                     {
                         extend: 'excelHtml5',
                         text: 'Export Excel',
-                        title: 'Laporan_Stok_Petshop_' + new Date().toISOString().slice(0,10),
+                        title: 'Laporan_Stok_GadgetZ_' + new Date().toISOString().slice(0,10),
                         className: 'btn btn-success btn-sm' // Tambahan class biar makin rapi
                     },
                     {
                         extend: 'pdfHtml5',
                         text: 'Export PDF',
-                        title: 'Laporan Mutasi Stok Petshop',
+                        title: 'Laporan_Stok_GadgetZ_' + new Date().toISOString().slice(0,10),
                         orientation: 'landscape',
                         pageSize: 'A4',
                         className: 'btn btn-danger btn-sm'
@@ -281,7 +281,7 @@
                     {
                         extend: 'print',
                         text: 'Print / Cetak',
-                        title: 'Laporan Mutasi Stok Petshop',
+                        title: 'Laporan_Stok_GadgetZ_' + new Date().toISOString().slice(0,10),
                         className: 'btn btn-info btn-sm'
                     }
                 ]
