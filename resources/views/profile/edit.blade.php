@@ -144,4 +144,45 @@
         </div>
     </div>
 </div>
+
+<script>
+(function () {
+    var input = document.querySelector('input[name="photo"]');
+    if (!input || !window.HTMLCanvasElement) return;
+
+    var MAX_DIMENSION = 512;
+    var QUALITY = 0.75;
+
+    input.addEventListener('change', function () {
+        var file = input.files[0];
+        if (!file || !file.type.startsWith('image/')) return;
+
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            var img = new Image();
+            img.onload = function () {
+                var ratio = Math.min(1, MAX_DIMENSION / Math.max(img.width, img.height));
+                var canvas = document.createElement('canvas');
+                canvas.width = Math.round(img.width * ratio);
+                canvas.height = Math.round(img.height * ratio);
+
+                var ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                canvas.toBlob(function (blob) {
+                    if (!blob) return;
+                    var compressed = new File([blob], 'photo.jpg', { type: 'image/jpeg' });
+                    var transfer = new DataTransfer();
+                    transfer.items.add(compressed);
+                    input.files = transfer.files;
+                }, 'image/jpeg', QUALITY);
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+})();
+</script>
 @endsection

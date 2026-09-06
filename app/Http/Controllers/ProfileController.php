@@ -69,6 +69,10 @@ class ProfileController extends Controller
      */
     private function compressPhoto(string $path): array
     {
+        if (!function_exists('imagecreatefromstring')) {
+            return [file_get_contents($path), mime_content_type($path)];
+        }
+
         $source = @imagecreatefromstring(file_get_contents($path));
 
         if (!$source) {
